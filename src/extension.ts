@@ -3,7 +3,7 @@ import * as svn from "./svnUtil";
 
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand(
-    "extension.redminelink",
+    "extension.redmineLink",
     () => {
       var activeTextEditor = vscode.window.activeTextEditor;
       if (activeTextEditor !== undefined) {
