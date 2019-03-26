@@ -15,9 +15,9 @@ export function activate(context: vscode.ExtensionContext) {
         }
         var lineNum = (activeTextEditor.selection.active.line + 1).toString();
         var filePath = getSubPath(fileName);
-        var texts: string[] = vscode.workspace.getConfiguration("redminelink")
-          .baseText;
-        var outputChannel = vscode.window.createOutputChannel("redminelink");
+        var texts: string[] = vscode.workspace.getConfiguration("redmineLink")
+          .baseUrl;
+        var outputChannel = vscode.window.createOutputChannel("redmineLink");
 
         texts.forEach(text => {
           let result: string;
