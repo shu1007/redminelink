@@ -14,16 +14,15 @@ export function activate(context: vscode.ExtensionContext) {
           return;
         }
         var lineNum = (activeTextEditor.selection.active.line + 1).toString();
-        var filePath = getSubPath(fileName);
         var texts: string[] = vscode.workspace.getConfiguration("redmineLink")
           .baseUrl;
         var outputChannel = vscode.window.createOutputChannel("redmineLink");
 
         texts.forEach(text => {
-          let result: string;
-          result = text.replace(/{RN}/, revNum);
-          result = result.replace(/{LN}/, lineNum);
-          result = result.replace(/{FP}/, filePath);
+          let result = text
+            .replace(/{RN}/, revNum)
+            .replace(/{LN}/, lineNum)
+            .replace(/{FP}/, getSubPath(fileName));
           if (text.indexOf('"') === -1) {
             result = replaceSpace(result);
           }
@@ -38,15 +37,13 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
-export function deactivate() {}
-
 function getSubPath(fullPath: string): string {
   var startIndex = Math.max(
     fullPath.indexOf("trunk"),
     fullPath.indexOf("branches")
   );
   if (startIndex !== -1) {
-    return fullPath.substring(startIndex);
+    return fullPath.substring(startIndex).replace(/\\/g, ",");
   }
   return "";
 }

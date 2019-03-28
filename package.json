@@ -18,14 +18,14 @@
     "commands": [
       {
         "command": "extension.redmineLink",
-        "title": "redmineLink"
+        "title": "RedmineLink"
       }
     ],
     "menus": {
       "editor/context": [
         {
           "command": "extension.redmineLink",
-          "title": "redmineLink"
+          "title": "RedmineLink"
         }
       ]
     },
