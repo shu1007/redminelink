@@ -10,7 +10,7 @@ export function activate(context: vscode.ExtensionContext) {
         var fileName = activeTextEditor.document.fileName;
         var revNum = svn.getRevisionNum(fileName);
         if (revNum === "") {
-          vscode.window.showErrorMessage("Couldon't get revision number.");
+          vscode.window.showErrorMessage("Couldn't get revision number.");
           return;
         }
         var lineNum = (activeTextEditor.selection.active.line + 1).toString();
