@@ -43,7 +43,7 @@ function getSubPath(fullPath: string): string {
     fullPath.indexOf("branches")
   );
   if (startIndex !== -1) {
-    return fullPath.substring(startIndex).replace(/\\/g, ",");
+    return fullPath.substring(startIndex).replace(/\\/g, "/");
   }
   return "";
 }
