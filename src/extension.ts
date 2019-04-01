@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import * as svn from "./svnUtil";
 
+var outputChannel = vscode.window.createOutputChannel("redmineLink");
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand(
     "extension.redmineLink",
@@ -16,8 +17,6 @@ export function activate(context: vscode.ExtensionContext) {
         var lineNum = (activeTextEditor.selection.active.line + 1).toString();
         var texts: string[] = vscode.workspace.getConfiguration("redmineLink")
           .baseUrl;
-        var outputChannel = vscode.window.createOutputChannel("redmineLink");
-
         texts.forEach(text => {
           let result = text
             .replace(/{RN}/, revNum)
@@ -29,12 +28,17 @@ export function activate(context: vscode.ExtensionContext) {
           outputChannel.appendLine(result);
         });
 
+        outputChannel.appendLine("");
         outputChannel.show();
       }
     }
   );
 
   context.subscriptions.push(disposable);
+}
+
+export function deactivate() {
+  outputChannel.dispose();
 }
 
 function getSubPath(fullPath: string): string {
