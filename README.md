@@ -11,7 +11,7 @@
 
 ```JSON
 "redmineLink.baseUrl": [
-"http://foo/bar/repository/revisions/{RN}/entry/{FP}#L{LN}",
-"source:\"{FP}@{RN}#L{LN}\""
+    "http://foo/bar/repository/revisions/{RN}/entry/{FP}#L{LN}",
+    "source:\"{FP}@{RN}#L{LN}\""
 ]
 ```
