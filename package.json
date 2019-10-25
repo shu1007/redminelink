@@ -34,10 +34,16 @@
       "title": "redmineLink configuration",
       "properties": {
         "redmineLink.baseUrl": {
-          "type": "string[]",
+          "type": "array",
           "default": [
-            "baseurl1",
-            "baseurl2"
+            {
+              "title": "URL1",
+              "url": "http://foo/bar/repository/revisions/{RN}/entry/{FP}#L{LN}"
+            },
+            {
+              "title": "URL2",
+              "url": "source:\"{FP}@{RN}#L{LN}\""
+            }
           ]
         }
       }

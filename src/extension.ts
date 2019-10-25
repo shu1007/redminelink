@@ -1,36 +1,57 @@
 import * as vscode from "vscode";
 import * as svn from "./svnUtil";
 
-var outputChannel = vscode.window.createOutputChannel("redmineLink");
+interface BaseURL {
+  title: string;
+  url: string;
+}
+
+let outputChannel = vscode.window.createOutputChannel("redmineLink");
 export function activate(context: vscode.ExtensionContext) {
-  let disposable = vscode.commands.registerCommand(
+  const disposable = vscode.commands.registerCommand(
     "extension.redmineLink",
     () => {
-      var activeTextEditor = vscode.window.activeTextEditor;
-      if (activeTextEditor !== undefined) {
-        var fileName = activeTextEditor.document.fileName;
-        var revNum = svn.getRevisionNum(fileName);
-        if (revNum === "") {
-          vscode.window.showErrorMessage("Couldn't get revision number.");
-          return;
-        }
-        var lineNum = (activeTextEditor.selection.active.line + 1).toString();
-        var texts: string[] = vscode.workspace.getConfiguration("redmineLink")
-          .baseUrl;
-        texts.forEach(text => {
-          let result = text
-            .replace(/{RN}/, revNum)
-            .replace(/{LN}/, lineNum)
-            .replace(/{FP}/, getSubPath(fileName));
-          if (text.indexOf('"') === -1) {
-            result = replaceSpace(result);
-          }
-          outputChannel.appendLine(result);
-        });
+      const baseUrls: BaseURL[] = vscode.workspace.getConfiguration(
+        "redmineLink"
+      ).baseUrl;
 
-        outputChannel.appendLine("");
-        outputChannel.show();
-      }
+      vscode.window
+        .showQuickPick(baseUrls.map(bu => bu.title))
+        .then(selected => {
+          outputChannel.clear();
+
+          const activeTextEditor = vscode.window.activeTextEditor;
+          if (activeTextEditor !== undefined) {
+            const fileName = activeTextEditor.document.fileName;
+            const revNum = svn.getRevisionNum(fileName);
+            if (revNum === "") {
+              vscode.window.showErrorMessage("Couldn't get revision number.");
+              return;
+            }
+            const lineNum = (
+              activeTextEditor.selection.active.line + 1
+            ).toString();
+
+            if (selected === undefined) {
+              vscode.window.showErrorMessage(
+                "The error occurred with QuickPick."
+              );
+              return;
+            }
+            const text = baseUrls.filter(url => url.title === selected)[0].url;
+            let result = text
+              .replace(/{RN}/, revNum)
+              .replace(/{LN}/, lineNum)
+              .replace(/{FP}/, getSubPath(fileName));
+            if (text.indexOf('"') === -1) {
+              result = replaceSpace(result);
+            }
+            outputChannel.appendLine(result);
+            outputChannel.show();
+
+            vscode.env.clipboard.writeText(result);
+          }
+        });
     }
   );
 
