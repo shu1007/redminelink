@@ -69,12 +69,16 @@ export function deactivate() {
 }
 
 const getSubPath = function(fullPath: string): string {
-  var startIndex = Math.max(
-    fullPath.indexOf("trunk"),
-    fullPath.indexOf("branches")
+  const targetArray = ["trunk", "branches"].filter(t =>
+    new RegExp(t).test(fullPath)
   );
-  if (startIndex !== -1) {
-    return fullPath.substring(startIndex).replace(/\\/g, "/");
+
+  if (targetArray.length === 1) {
+    const target = targetArray[0];
+    return fullPath
+      .substring(fullPath.indexOf(target))
+      .replace(/\\/g, "/")
+      .replace(new RegExp(`${target}.*?/`), `${target}/`);
   }
   return "";
 };
