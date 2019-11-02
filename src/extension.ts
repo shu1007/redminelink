@@ -1,12 +1,14 @@
 import * as vscode from "vscode";
 import * as svn from "./svnUtil";
+import * as open from "open";
 
 interface BaseURL {
-  title: string;
+  name: string;
   url: string;
+  openBrowser: boolean;
 }
 
-let outputChannel = vscode.window.createOutputChannel("redmineLink");
+const outputChannel = vscode.window.createOutputChannel("redmineLink");
 export function activate(context: vscode.ExtensionContext) {
   const disposable = vscode.commands.registerCommand(
     "extension.redmineLink",
@@ -16,7 +18,7 @@ export function activate(context: vscode.ExtensionContext) {
       ).baseUrl;
 
       vscode.window
-        .showQuickPick(baseUrls.map(bu => bu.title))
+        .showQuickPick(baseUrls.map(url => url.name))
         .then(selected => {
           outputChannel.clear();
 
@@ -38,18 +40,22 @@ export function activate(context: vscode.ExtensionContext) {
               );
               return;
             }
-            const text = baseUrls.filter(url => url.title === selected)[0].url;
-            let result = text
+            const baseUrl = baseUrls.filter(url => url.name === selected)[0];
+            const url = baseUrl.url;
+            let result = url
               .replace(/{RN}/, revNum)
               .replace(/{LN}/, lineNum)
               .replace(/{FP}/, getSubPath(fileName));
-            if (text.indexOf('"') === -1) {
-              result = replaceSpace(result);
+            if (url.indexOf('"') === -1) {
+              result = encodeURI(result);
             }
             outputChannel.appendLine(result);
             outputChannel.show();
 
             vscode.env.clipboard.writeText(result);
+            if (baseUrl.openBrowser) {
+              open(result);
+            }
           }
         });
     }
@@ -62,7 +68,7 @@ export function deactivate() {
   outputChannel.dispose();
 }
 
-function getSubPath(fullPath: string): string {
+const getSubPath = function(fullPath: string): string {
   var startIndex = Math.max(
     fullPath.indexOf("trunk"),
     fullPath.indexOf("branches")
@@ -71,8 +77,4 @@ function getSubPath(fullPath: string): string {
     return fullPath.substring(startIndex).replace(/\\/g, "/");
   }
   return "";
-}
-
-function replaceSpace(str: string): string {
-  return str.replace(/\s/g, "%20");
-}
+};

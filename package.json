@@ -37,12 +37,14 @@
           "type": "array",
           "default": [
             {
-              "title": "URL1",
-              "url": "http://foo/bar/repository/revisions/{RN}/entry/{FP}#L{LN}"
+              "name": "URL1",
+              "url": "http://foo/bar/repository/revisions/{RN}/entry/{FP}#L{LN}",
+              "openBrowser": true
             },
             {
-              "title": "URL2",
-              "url": "source:\"{FP}@{RN}#L{LN}\""
+              "name": "URL2",
+              "url": "source:\"{FP}@{RN}#L{LN}\"",
+              "openBrowser": false
             }
           ]
         }
@@ -62,5 +64,8 @@
     "tslint": "^5.12.1",
     "typescript": "^3.3.1",
     "vscode": "^1.1.28"
+  },
+  "dependencies": {
+    "open": "^7.0.0"
   }
 }
