@@ -20,6 +20,13 @@ export function activate(context: vscode.ExtensionContext) {
       vscode.window
         .showQuickPick(baseUrls.map(url => url.name))
         .then(selected => {
+          if (selected === undefined) {
+            vscode.window.showErrorMessage(
+              "The error occurred with QuickPick."
+            );
+            return;
+          }
+
           outputChannel.clear();
 
           const activeTextEditor = vscode.window.activeTextEditor;
@@ -34,12 +41,6 @@ export function activate(context: vscode.ExtensionContext) {
               activeTextEditor.selection.active.line + 1
             ).toString();
 
-            if (selected === undefined) {
-              vscode.window.showErrorMessage(
-                "The error occurred with QuickPick."
-              );
-              return;
-            }
             const baseUrl = baseUrls.filter(url => url.name === selected)[0];
             const url = baseUrl.url;
             let result = url
